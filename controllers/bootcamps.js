@@ -1,7 +1,7 @@
 const Bootcamp = require('../models/Bootcamp')
 
 // @desc     Get all bootcamps
-// $route    GET /api/v1/bootcamps
+// @route    GET /api/v1/bootcamps
 // @access   Public
 exports.getBootcamps = async (req, res, next) => {
     try {
@@ -20,7 +20,7 @@ exports.getBootcamps = async (req, res, next) => {
 }
 
 // @desc     Get a single bootcamp
-// $route    GET /api/v1/bootcamps/:id
+// @route    GET /api/v1/bootcamps/:id
 // @access   Public
 exports.getBootcamp = async (req, res, next) => {
 
@@ -37,7 +37,7 @@ exports.getBootcamp = async (req, res, next) => {
 }
 
 // @desc     Create new bootcamp
-// $route    POST /api/v1/bootcamps
+// @route    POST /api/v1/bootcamps
 // @access   Private
 exports.createBootcamp = async (req, res, next) => {
     console.log(req.body)
@@ -63,7 +63,7 @@ exports.createBootcamp = async (req, res, next) => {
 }
 
 // @desc     Update bootcamp
-// $route    PUT /api/v1/bootcamps/:id
+// @route    PUT /api/v1/bootcamps/:id
 // @access   Private
 exports.updateBootcamp = async(req, res, next) => {
     try {
@@ -89,7 +89,7 @@ exports.updateBootcamp = async(req, res, next) => {
 }
 
 // @desc     Delete bootcamp
-// $route    DELETE /api/v1/bootcamps/:id
+// @route    DELETE /api/v1/bootcamps/:id
 // @access   Private
 exports.deleteBootcamp = async(req, res, next) => {
     try {
