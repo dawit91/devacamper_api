@@ -33,8 +33,8 @@ const importData = async () => {
 //delete bootcamp and course from database
 const deleteData = async () => {
     try {
-        await Bootcamp.deleteMany()
-        await Course.deleteMany()
+        await Bootcamp.remove()
+        await Course.remove()
         console.log(`Completed Deleting bootcamps`.red.inverse)
         process.exit()
     } catch (error) {

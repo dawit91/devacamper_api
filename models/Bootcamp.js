@@ -104,7 +104,12 @@ const BootCampSchema = new mongoose.Schema({
     //     ref: 'User',
     //     required: true
     //   }
+}, {
+  toJSON: {virtuals: true},
+  toObject: {virtuals: true}
 });
+
+
 
 BootCampSchema.pre('save', function(next) {
   this.slug = slugify(this.name, { lower: true})
@@ -126,6 +131,45 @@ BootCampSchema.pre('save', async function(next) {
 
   this.address = undefined
   next()
+})
+
+// BootCampSchema.pre('remove', async function(next) {
+//   await this.constructor.deleteOne({_id: this._id});
+//   next();
+// })
+
+BootCampSchema.pre('deleteOne', { document: true }, async function(next) {
+  console.log(`Courses being removed from bootcamp ${this._id}`);
+  await this.model('Course').deleteMany({ bootcamp: this._id });
+  next();
+});
+
+
+// BootCampSchema.post('findOneAndDelete', async function(next) {
+
+//     console.log('Deleting bootcamp with id', this._conditions._id);
+//     await this.model('Course').deleteMany({ bootcamp: this._conditions._id });
+//     next();
+// });
+
+// BootCampSchema.pre('deleteMany', async function(next) {
+//   console.log(`Deleting ${this[0]}`)
+//   // await this.model('Course').deleteMany({bootcamp: this._id})
+//   next()
+// })
+
+
+
+
+
+
+
+
+BootCampSchema.virtual('courses', {
+  ref: 'Course',
+  localField: '_id',
+  foreignField: 'bootcamp',
+  justOne: false
 })
 
 module.exports = mongoose.model('Bootcamp', BootCampSchema);

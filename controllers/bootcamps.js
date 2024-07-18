@@ -2,7 +2,7 @@ const ErrorResponse = require('../utils/errorResponse')
 const Bootcamp = require('../models/Bootcamp')
 const asyncHandler = require('../middleware/async')
 const geocoder = require('../utils/geocoder');
-
+const Course = require('../models/Course')
 
 // @desc     Get all bootcamps
 // @route    GET /api/v1/bootcamps
@@ -18,7 +18,7 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
         queryStr = queryStr.replace(/\b(lt|lte|gt|gte|in)\b/g, match => `$${match}`)
 
         console.log(queryStr)
-        query = Bootcamp.find(JSON.parse(queryStr))
+        query = Bootcamp.find(JSON.parse(queryStr)).populate('courses')
 
         //filter
         if(req.query.select) {
@@ -72,7 +72,10 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
 // @access   Public
 exports.getBootcamp = asyncHandler(async (req, res, next) => {
 
-        const bootcamp = await Bootcamp.findById(req.params.id);
+        const bootcamp = await Bootcamp.findById(req.params.id).populate({
+            path: 'courses'
+            // select: 'title description'
+        });
 
         if(!bootcamp) {
             return  next(new ErrorResponse(`Bootcamp not found with id of ${req.params.id}`, 404))
@@ -120,15 +123,45 @@ exports.updateBootcamp = asyncHandler(async(req, res, next) => {
 // @desc     Delete bootcamp
 // @route    DELETE /api/v1/bootcamps/:id
 // @access   Private
-exports.deleteBootcamp = asyncHandler(async(req, res, next) => {
-        const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id)
+// exports.deleteBootcamp = asyncHandler(async(req, res, next) => {
+//         const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id)
 
-        if(!bootcamp) {
-            return  next(new ErrorResponse(`Resource not found with id of ${req.params.id}`, 404))
+//         if(!bootcamp) {
+//             return  next(new ErrorResponse(`Resource not found with id of ${req.params.id}`, 404))
         
-        }
-        res.status(200).json({success: true, data: {}})
-});
+//         }
+
+        
+//         res.status(200).json({success: true, data: {}})
+// });
+
+exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
+    const bootcamp = await Bootcamp.findById(req.params.id);
+  
+    if (!bootcamp) {
+      return next(new ErrorResponse(`Bootcamp with id of ${req.params.id} not found`, 404));
+    }
+  
+    await bootcamp.deleteOne();
+    await Course.deleteMany( { bootcamp: bootcamp._id });
+  
+    res.status(200).json({ 
+      success: true, 
+      data: {} 
+    })
+  });
+
+// exports.deleteBootcamp = asyncHandler(async(req, res, next) => {
+//     const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id)
+    
+//     if(!bootcamp) {
+//         return  next(new ErrorResponse(`Resource not found with id of ${req.params.id}`, 404))
+//     }
+//     console.log(bootcamp)
+//     //   bootcamp.deleteOne()
+//     //  console.log(`Amount of deleted items: ${result.deletedCount}`);
+//     res.status(200).json({success: true, data: {}})
+// });
 
 // @desc     Get bootcamps in a radius
 // @route    GET /api/v1/bootcamps/radius/:zipcode/:distance
