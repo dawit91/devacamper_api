@@ -4,7 +4,6 @@ const errorHandler = (err, req, res, next) => {
     let error = { ...err }
     // error.message = err.message
     error.message = err.message
-
     //Malformed ObjectId
     if(err.name === 'CastError') {
         const message = `Resource not found with id of ${err.value}`

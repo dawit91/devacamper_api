@@ -99,11 +99,11 @@ const BootCampSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
       },
-    //   user: {
-    //     type: mongoose.Schema.ObjectId,
-    //     ref: 'User',
-    //     required: true
-    //   }
+      user: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+        required: true
+      }
 }, {
   toJSON: {virtuals: true},
   toObject: {virtuals: true}
@@ -143,26 +143,6 @@ BootCampSchema.pre('deleteOne', { document: true }, async function(next) {
   await this.model('Course').deleteMany({ bootcamp: this._id });
   next();
 });
-
-
-// BootCampSchema.post('findOneAndDelete', async function(next) {
-
-//     console.log('Deleting bootcamp with id', this._conditions._id);
-//     await this.model('Course').deleteMany({ bootcamp: this._conditions._id });
-//     next();
-// });
-
-// BootCampSchema.pre('deleteMany', async function(next) {
-//   console.log(`Deleting ${this[0]}`)
-//   // await this.model('Course').deleteMany({bootcamp: this._id})
-//   next()
-// })
-
-
-
-
-
-
 
 
 BootCampSchema.virtual('courses', {

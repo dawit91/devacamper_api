@@ -34,6 +34,11 @@ const courseSchema = mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'Bootcamp',
         required: [true, 'Please add a bootcamp']
+    },
+    user: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+        required: [true, 'Please add a bootcamp']
     }
 })
 
@@ -62,7 +67,8 @@ courseSchema.post('save', function() {
     this.constructor.getAverageCost(this.bootcamp)
 })
 
-courseSchema.pre('remove', function() { 
+courseSchema.pre('deleteOne', { document: true }, function() { 
+    console.log(`Course being removed from bootcamp ${this.bootcamp}`)
     this.constructor.getAverageCost(this.bootcamp)
 })
 
